@@ -5,6 +5,7 @@ const TableView = require('./table-view');
 const model = new TableModel();
 const tableView = new TableView(model);
 tableView.init();
+console.log(tableView.sumRowEl);
 
 },{"./table-model":4,"./table-view":5}],2:[function(require,module,exports){
 const getRange = function (fromNum, toNum) {
@@ -59,6 +60,7 @@ class TableModel {
     this.numCols = numCols;
     this.numRows = numRows;
     this.data = {};
+    this.sums = new Array(numCols);
   }
 
   _getCellId(location) {
@@ -71,6 +73,23 @@ class TableModel {
 
   setValue(location, value) {
     this.data[this._getCellId(location)] = value;
+  }
+
+  updateSum(col) {
+    let array = [];
+    let sum = 0;
+
+    // compute sum filtering undefined values and strings and shit like that
+    for (let i = 0; i < this.numRows; i++) {
+      const location = { col: col, row: i };
+      let cellData = this.getValue(location);
+      array.push(cellData);
+    }
+
+    console.log(array);
+
+    this.sums[col] = sum;
+    return sum;
   }
 }
 
@@ -96,6 +115,7 @@ class TableView {
     this.headerRowEl = document.querySelector('THEAD TR');
     this.sheetBodyEl = document.querySelector('TBODY');
     this.formulaBarEl = document.querySelector('#formula-bar');
+    this.sumRowEl = document.querySelector('TFOOT TR');
   }
 
   initCurrentCell() {
@@ -116,6 +136,7 @@ class TableView {
   renderTable() {
     this.renderTableHeader();
     this.renderTableBody();
+    this.renderTableFooter();
   }
 
   renderTableHeader() {
@@ -128,6 +149,13 @@ class TableView {
   isCurrentCell(col, row) {
     return this.currentCellLocation.col === col &&
            this.currentCellLocation.row === row;
+  }
+
+  renderTableFooter() {
+    for (let col = 0; col < this.model.numCols; col++) {
+      const td = createTD('');
+      this.sumRowEl.appendChild(td);
+    }
   }
 
   renderTableBody() {
@@ -164,6 +192,11 @@ class TableView {
     this.renderTableBody();
   }
 
+  updateFooterSum(col) {
+    const sum = this.model.updateSum(col);
+    // TODO: update the footer.td[col] = sum
+  }
+
   handleSheetClick(evt) {
     const col = evt.target.cellIndex;
     const row = evt.target.parentElement.rowIndex - 1;
@@ -171,6 +204,8 @@ class TableView {
     this.currentCellLocation = { col: col, row: row };
     this.renderTableBody();
     this.renderFormulaBar();
+
+    this.updateFooterSum(col);
   }
 
 }

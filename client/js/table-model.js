@@ -3,6 +3,7 @@ class TableModel {
     this.numCols = numCols;
     this.numRows = numRows;
     this.data = {};
+    this.sums = new Array(numCols);
   }
 
   _getCellId(location) {
@@ -15,6 +16,23 @@ class TableModel {
 
   setValue(location, value) {
     this.data[this._getCellId(location)] = value;
+  }
+
+  updateSum(col) {
+    let array = [];
+    let sum = 0;
+
+    // compute sum filtering undefined values and strings and shit like that
+    for (let i = 0; i < this.numRows; i++) {
+      const location = { col: col, row: i };
+      let cellData = this.getValue(location);
+      array.push(cellData);
+    }
+
+    console.log(array);
+
+    this.sums[col] = sum;
+    return sum;
   }
 }
 
