@@ -22,7 +22,7 @@ class TableModel {
     let array = [];
     let sum = 0;
 
-    // compute sum filtering undefined values and strings and shit like that
+    // compute sum filtering undefined values and strings, etc.
     for (let i = 0; i < this.numRows; i++) {
       const location = { col: col, row: i };
       let cellData = this.getValue(location);
