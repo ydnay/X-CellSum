@@ -6,10 +6,8 @@ This is a microscopic "spreadsheet" app that will knock your socks off, if you h
 
 ## Feature spec
 
-![img](http://i.imgur.com/FK38VUZh.jpg)
+Pending. Coming soon!
 
 ## Tech spec
 
-![img](http://i.imgur.com/bOiihOCl.jpg)
-
-![img](http://i.imgur.com/9DBgLu3l.jpg)
+![img](https://docs.google.com/document/d/1URDwXbvc2sxaWWaX1jd8F05MjZqgpfBtg2W6s4mT4Ks/edit)
