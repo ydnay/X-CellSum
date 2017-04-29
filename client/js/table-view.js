@@ -17,7 +17,7 @@ class TableView {
     this.headerRowEl = document.querySelector('THEAD TR');
     this.sheetBodyEl = document.querySelector('TBODY');
     this.formulaBarEl = document.querySelector('#formula-bar');
-    this.sumRowEl = document.querySelector('TFOOT TR');
+    this.sumRowEl = document.querySelector('TFOOT');
   }
 
   initCurrentCell() {
@@ -39,6 +39,7 @@ class TableView {
     this.renderTableHeader();
     this.renderTableBody();
     this.renderTableFooter();
+    this.updateFooterSum();
   }
 
   renderTableHeader() {
@@ -51,13 +52,6 @@ class TableView {
   isCurrentCell(col, row) {
     return this.currentCellLocation.col === col &&
            this.currentCellLocation.row === row;
-  }
-
-  renderTableFooter() {
-    for (let col = 0; col < this.model.numCols; col++) {
-      const td = createTD('');
-      this.sumRowEl.appendChild(td);
-    }
   }
 
   renderTableBody() {
@@ -83,20 +77,54 @@ class TableView {
     this.sheetBodyEl.appendChild(fragment);
   }
 
+  updateFooterSum(col) {
+    const footerArray = [];
+    for (let i = 0; i < this.model.numCols; i++) {
+      footerArray.push(null);
+    }
+
+    for (let i = 0; i < this.model.numRows; i++) {
+      for (let col = 0; col < this.model.numCols; col++) {
+        const pos = { col: col, row: i };
+        const val = this.model.getValue(pos);
+        const num = parseInt(val);
+        if (!isNaN(val)) {
+          footerArray[col] += num;
+        }
+      }
+    }
+
+    return footerArray;
+  }
+
+  renderTableFooter() {
+    const tr = createTR();
+    for (let col = 0; col < this.model.numCols; col++) {
+      const td = createTD();
+      tr.appendChild(td);
+    }
+
+    removeChildren(this.sumRowEl);
+    this.sumRowEl.appendChild(tr);
+
+    let footTD = this.sumRowEl.querySelectorAll('TD');
+
+    let sum = this.updateFooterSum();
+    for (let i = 0; i < this.model.numCols; i++) {
+      footTD[i].textContent = sum[i];
+    }
+  }
+
   attachEventHandlers() {
     this.sheetBodyEl.addEventListener('click', this.handleSheetClick.bind(this));
     this.formulaBarEl.addEventListener('keyup', this.handleFormulaBarChange.bind(this));
+    this.formulaBarEl.addEventListener('keyup', this.renderTableFooter.bind(this));
   }
 
   handleFormulaBarChange(evt) {
     const value = this.formulaBarEl.value;
     this.model.setValue(this.currentCellLocation, value);
     this.renderTableBody();
-  }
-
-  updateFooterSum(col) {
-    const sum = this.model.updateSum(col);
-    // TODO: update the footer.td[col] = sum
   }
 
   handleSheetClick(evt) {
@@ -106,8 +134,6 @@ class TableView {
     this.currentCellLocation = { col: col, row: row };
     this.renderTableBody();
     this.renderFormulaBar();
-
-    this.updateFooterSum(col);
   }
 
 }
