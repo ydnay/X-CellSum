@@ -113,6 +113,8 @@ class TableView {
     for (let i = 0; i < this.model.numCols; i++) {
       footTD[i].textContent = sum[i];
     }
+
+    tr.className = 'sum-row';
   }
 
   attachEventHandlers() {
