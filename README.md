@@ -6,7 +6,7 @@ This is a microscopic "spreadsheet" app that will knock your socks off, if you h
 
 ## Feature spec
 
-Pending. Coming soon!
+https://www.youtube.com/watch?v=2a26Od9JoTA
 
 ## Tech spec
 
