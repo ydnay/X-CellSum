@@ -17,7 +17,7 @@ class TableView {
     this.headerRowEl = document.querySelector('THEAD TR');
     this.sheetBodyEl = document.querySelector('TBODY');
     this.formulaBarEl = document.querySelector('#formula-bar');
-    this.sumRowEl = document.querySelector('TFOOT');
+    this.footerRowEl = document.querySelector('TFOOT');
   }
 
   initCurrentCell() {
@@ -78,23 +78,23 @@ class TableView {
   }
 
   updateFooterSum(col) {
-    const footerArray = [];
-    for (let i = 0; i < this.model.numCols; i++) {
-      footerArray.push(null);
+    const columnSums = [];
+    for (let row = 0; row < this.model.numCols; row++) {
+      columnSums.push(null);
     }
 
-    for (let i = 0; i < this.model.numRows; i++) {
+    for (let row = 0; row < this.model.numRows; row++) {
       for (let col = 0; col < this.model.numCols; col++) {
-        const pos = { col: col, row: i };
+        const pos = { col: col, row: row };
         const val = this.model.getValue(pos);
         const num = parseInt(val);
         if (!isNaN(val)) {
-          footerArray[col] += num;
+          columnSums[col] += num;
         }
       }
     }
 
-    return footerArray;
+    return columnSums;
   }
 
   renderTableFooter() {
@@ -104,10 +104,10 @@ class TableView {
       tr.appendChild(td);
     }
 
-    removeChildren(this.sumRowEl);
-    this.sumRowEl.appendChild(tr);
+    removeChildren(this.footerRowEl);
+    this.footerRowEl.appendChild(tr);
 
-    let footTD = this.sumRowEl.querySelectorAll('TD');
+    let footTD = this.footerRowEl.querySelectorAll('TD');
 
     let sum = this.updateFooterSum();
     for (let i = 0; i < this.model.numCols; i++) {
